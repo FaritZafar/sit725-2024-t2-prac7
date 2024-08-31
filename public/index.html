@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" media="screen,projection"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Socket.IO Example</title>
+</head>
+<body>
+    <h1>Socket.IO Example</h1>
+    <form id="messageForm">
+        <input id="messageInput" type="text" placeholder="Type a message" />
+        <button type="submit" class="btn">Send</button>
+    </form>
+    <div id="messages"></div>
+
+    <!-- Include jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Include JavaScript for Materialize -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <!-- Include Socket.IO -->
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- Custom JavaScript -->
+    <script>
+        $(document).ready(function() {
+            // Initialize Socket.IO
+            const socket = io();
+
+            // Handle form submission to send a message to the server
+            $('#messageForm').on('submit', function(event) {
+                event.preventDefault();
+                const message = $('#messageInput').val();
+                socket.emit('message', message);
+                $('#messageInput').val('');
+            });
+
+            // Listen for messages from the server
+            socket.on('message', (msg) => {
+                $('#messages').append(`<p>${msg}</p>`);
+            });
+        });
+    </script>
+</body>
+</html>

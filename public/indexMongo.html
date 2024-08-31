@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Import Google Icon Font -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Import materialize.css -->
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" media="screen,projection"/>
+    <!-- Let browser know website is optimized for mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Restaurant Landing Page</title>
+    <style>
+        .header {
+            background-image: url('landingpageimage.jpg'); /* Replace with your image URL */
+            background-size: cover;
+            background-position: center;
+            height: 600px;
+            color: white;
+        }
+        .header .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+        .menu-item {
+            margin-bottom: 20px;
+        }
+        .contact-data {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav>
+        <div class="nav-wrapper">
+            <a href="#!" class="brand-logo center">Affigaoto Romania</a>
+            <ul class="left hide-on-med-and-down">
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#menu">Menu</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="container">
+            <h1 class="center-align">Welcome to Our Restaurant</h1>
+            <h5 class="center-align">Experience the best dining with us</h5>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <div id="about" class="container section">
+        <div class="row">
+            <div class="col s12 m6">
+                <h4>About Us</h4>
+                <p>Welcome to our restaurant where we serve delicious meals prepared with the freshest ingredients. We strive to provide the best dining experience for our customers.</p>
+            </div>
+            <div class="col s12 m6">
+                <img src="home image.jpg" alt="Restaurant Image" class="responsive-img">
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu Section -->
+    <div id="menu" class="container section">
+        <h4 class="center-align">Our Menu</h4>
+        <div class="row">
+            <div class="col s12 m4">
+                <div class="card">
+                    <div class="card-image">
+                        <img src="chickentikka.webp" alt="Dish Image" style="height: 200px; width: 100%;">
+                    </div>
+                    <div class="card-content">
+                        <span class="card-title">Chicken Tikka</span>
+                        <p>Slow cooked chicken with spices and gravy.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col s12 m4">
+                <div class="card">
+                    <div class="card-image">
+                        <img src="mushroomchicken.jpg" alt="Dish Image" style="height: 200px; width: 100%;">
+                    </div>
+                    <div class="card-content">
+                        <span class="card-title">Mushroom Chicken</span>
+                        <p>Mushroom and chicken cooked in white sauce gravy.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col s12 m4">
+                <div class="card">
+                    <div class="card-image">
+                        <img src="pasta.jpg" alt="Dish Image" style="height: 200px; width: 100%;">
+                    </div>
+                    <div class="card-content">
+                        <span class="card-title">Pasta</span>
+                        <p>Your choice of pasta.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div id="contact" class="container section">
+        <h4 class="center-align">Contact Us</h4>
+        <div class="row">
+            <form id="contactForm" class="col s12">
+                <div class="row">
+                    <div class="input-field col s12 m6">
+                        <input id="name" type="text" class="validate">
+                        <label for="name">Name</label>
+                    </div>
+                    <div class="input-field col s12 m6">
+                        <input id="email" type="email" class="validate">
+                        <label for="email">Email</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <textarea id="message" class="materialize-textarea"></textarea>
+                        <label for="message">Message</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 center-align">
+                        <button class="btn waves-effect waves-light" type="submit" name="action">Submit
+                            <i class="material-icons right">send</i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- Section to display submitted data -->
+        <div id="contactData" class="container section contact-data">
+            <h5>Submitted Data</h5>
+            <div class="row" id="dataContainer">
+                <!-- Data will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Include jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Include JavaScript for Materialize -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <!-- Include Socket.IO -->
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- Custom JavaScript -->
+    <script>
+        $(document).ready(function() {
+            // Initialize Materialize components
+            M.AutoInit();
+
+            // Initialize Socket.IO
+            const socket = io();
+
+            // Handle project info from server
+            socket.on('projectInfo', (info) => {
+                console.log('Project Info:', info);
+                // Update the UI or handle project info here
+                $('#projectInfo').text(`Name: ${info.name}, Version: ${info.version}, Description: ${info.description}`);
+            });
+
+            // Handle messages from server
+            socket.on('message', (msg) => {
+                console.log('Message from server:', msg);
+                // Display message or update UI here
+                $('#messages').append(`${msg}\n`);
+            });
+
+            // Handle form submission
+            $('#contactForm').on('submit', function(event) {
+                event.preventDefault();
+                const name = $('#name').val();
+                const email = $('#email').val();
+                const message = $('#message').val();
+
+                $.post('/api/contact', { name, email, message }, function(response) {
+                    if (response.statusCode === 201) {
+                        M.toast({html: 'Message sent successfully!', classes: 'green'});
+                        $('#contactForm')[0].reset();
+                        fetchContactData();
+                        socket.emit('message', 'New contact form submitted: ' + message); // Notify server about new form submission
+                    } else {
+                        M.toast({html: 'Failed to send message', classes: 'red'});
+                    }
+                });
+            });
+
+            // Fetch and display contact data
+            function fetchContactData() {
+                $.get('/api/contact', function(response) {
+                    if (response.statusCode === 200) {
+                        const data = response.data;
+                        $('#dataContainer').empty();
+                        data.forEach(item => {
+                            const dataRow = `
+                                <div class="col s12">
+                                    <div class="card-panel teal lighten-2">
+                                        <span class="white-text"><strong>Name:</strong> ${item.name}</span>
+                                        <span class="white-text"><strong>Email:</strong> ${item.email}</span>
+                                        <span class="white-text"><strong>Message:</strong> ${item.message}</span>
+                                    </div>
+                                </div>
+                            `;
+                            $('#dataContainer').append(dataRow);
+                        });
+                    } else {
+                        M.toast({html: 'Failed to retrieve data', classes: 'red'});
+                    }
+                });
+            }
+
+            // Load contact data when the page loads
+            fetchContactData();
+        });
+    </script>
+</body>
+</html>
